@@ -322,10 +322,7 @@
         $div = $('<div />').width(boundx).height(boundy).addClass(cssClass('holder')).css({
         position: 'relative',
         backgroundColor: options.bgColor
-      }).insertAfter($origimg).append($img);
-      
-    options.overlayOffsetX = origimgleft - $div.offset().left;
-    options.overlayOffsetY = origimgtop - $div.offset().top;      
+      }).insertAfter($origimg).append($img);    
 
     delete(options.bgColor);
     if (options.addClass) {
@@ -855,8 +852,8 @@
           left: px(-x)
         });
         $sel.css({
-          top: px(y + options.overlayOffsetY),
-          left: px(x + options.overlayOffsetX)
+          top: px(y + (origimgtop - $div.offset().top)),
+          left: px(x + (origimgleft - $div.offset().left))
         });
       }
       //}}}
@@ -1599,10 +1596,6 @@
     maxSize: [0, 0],
     minSize: [0, 0],
     minSize: [0, 0],
-
-    // X/Y image overlay offsets
-    overlayOffsetX: 0,
-    overlayOffsetY: 0,
 
     // Callbacks / Event Handlers
     onChange: function () {},
