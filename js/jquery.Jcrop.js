@@ -856,7 +856,7 @@
         });
         $sel.css({
           top: px(y + options.overlayOffsetY),
-          left: px(x +  + options.overlayOffsetX)
+          left: px(x + options.overlayOffsetX)
         });
       }
       //}}}
