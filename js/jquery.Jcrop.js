@@ -309,6 +309,8 @@
 
     $img.width($origimg.width());
     $img.height($origimg.height());
+    var origimgleft = $origimg.offset().left;
+    var origimgtop = $origimg.offset().top;    
     $origimg.after($img).hide();
 
     presize($img, options.boxWidth, options.boxHeight);
@@ -321,6 +323,9 @@
         position: 'relative',
         backgroundColor: options.bgColor
       }).insertAfter($origimg).append($img);
+      
+    options.overlayOffsetX = origimgleft - $div.offset().left;
+    options.overlayOffsetY = origimgtop - $div.offset().top;      
 
     delete(options.bgColor);
     if (options.addClass) {
@@ -850,8 +855,8 @@
           left: px(-x)
         });
         $sel.css({
-          top: px(y),
-          left: px(x)
+          top: px(y + options.overlayOffsetY),
+          left: px(x +  + options.overlayOffsetX)
         });
       }
       //}}}
@@ -1344,9 +1349,10 @@
     //}}}
     function destroy() //{{{
     {
-      $div.remove();
-      $origimg.show();
-      $(obj).removeData('Jcrop');
+     $origimg.show();
+     $(obj).removeData('Jcrop');
+     $div.empty();
+     $div.remove();
     }
     //}}}
     function setImage(src, callback) //{{{
@@ -1415,7 +1421,7 @@
             duration: options.fadeTime
           });
         } else {
-          div.css('backgroundColor', options.bgColor);
+          $div.css('backgroundColor', options.bgColor);
         }
 
         delete(options.bgColor);
@@ -1526,13 +1532,14 @@
     }
     //}}}
 
+    var requestedApi = null;
     // Iterate over each object, attach Jcrop
     this.each(function () {
       // If we've already attached to this object
       if ($(this).data('Jcrop')) {
         // The API can be requested this way (undocumented)
         if (options === 'api') {
-          return $(this).data('Jcrop');
+            if (requestedApi == null) requestedApi = $(this).data('Jcrop'); 
         }
         // Otherwise, we just reset the options...
         else {
@@ -1545,8 +1552,10 @@
       }
     });
 
-    // Return "this" so the object is chainable (jQuery-style)
-    return this;
+    // If API was requested return API, else return "this" so the object is chainable (jQuery-style)
+    if (requestedApi) return requestedApi; // Get API through the undocumented means
+    else return this;
+
   };
   //}}}
   // Global Defaults {{{
@@ -1589,6 +1598,11 @@
     minSelect: [0, 0],
     maxSize: [0, 0],
     minSize: [0, 0],
+    minSize: [0, 0],
+
+    // X/Y image overlay offsets
+    overlayOffsetX: 0,
+    overlayOffsetY: 0,
 
     // Callbacks / Event Handlers
     onChange: function () {},
