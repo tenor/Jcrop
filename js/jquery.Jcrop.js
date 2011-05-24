@@ -314,15 +314,18 @@
     $origimg.after($img).hide();
 
     presize($img, options.boxWidth, options.boxHeight);
+    
+    if(options.container === null) {
+      options.container = $img; //if container is not specified, image is container
+    }
 
     var boundx = $img.width(),
         boundy = $img.height(),
-        
-        
-        $div = $('<div />').width(boundx).height(boundy).addClass(cssClass('holder')).css({
+
+        $div = $('<div />').width($(options.container).width()).height($(options.container).height()).addClass(cssClass('holder')).css({
         position: 'relative',
         backgroundColor: options.bgColor
-      }).insertAfter($origimg).append($img);    
+      }).insertAfter($origimg).append($img);                 
 
     delete(options.bgColor);
     if (options.addClass) {
@@ -355,10 +358,10 @@
     }
 
     var bound = options.boundary;
-    var $trk = newTracker().width(boundx + (bound * 2)).height(boundy + (bound * 2)).css({
+    var $trk = newTracker().width($(options.container).width() + (bound * 2)).height($(options.container).height() + (bound * 2)).css({
       position: 'absolute',
-      top: px(-bound),
-      left: px(-bound),
+      top: px(-bound + ( options.container == $img ? $img.position().top : 0 )),  //Tracker's top-left position should begin at image's position if container is not specified
+      left: px(-bound + ( options.container == $img ? $img.position().left : 0 )),
       zIndex: 290
     }).mousedown(newSelection);
 
@@ -1591,6 +1594,7 @@
     fadeTime: 400,
     animationDelay: 20,
     swingSpeed: 3,
+    container: null,
 
     minSelect: [0, 0],
     maxSize: [0, 0],

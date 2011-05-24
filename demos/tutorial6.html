@@ -24,6 +24,7 @@
 		jQuery(function($){
 
       $('#target').Jcrop({
+        container:  $('#target').parent(),
         onChange:   showCoords,
         onSelect:   showCoords,
         onRelease:  clearCoords
